@@ -10,7 +10,9 @@ import {
   Download,
   Plus,
   LoaderCircle,
-  MoreVertical
+  MoreVertical,
+  Copy,
+  Check,
 } from 'lucide-react';
 
 export const Icons = {
@@ -23,4 +25,6 @@ export const Icons = {
   add: Plus,
   spinner: LoaderCircle,
   moreVertical: MoreVertical,
+  copy: Copy,
+  check: Check,
 };
