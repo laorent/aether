@@ -7,9 +7,9 @@ import {
   HarmBlockThreshold,
   Content,
   Part,
-  EnhancedGenerateContentResponse,
   FunctionCallingMode,
 } from "@google/generative-ai";
+import { GoogleAIFileManager } from "@google/generative-ai/server";
 
 export const runtime = "edge";
 
@@ -25,14 +25,31 @@ interface RequestBody {
   };
 }
 
+// 定义引用格式
+interface Citation {
+  url: string;
+  title: string;
+  index: number;
+}
+
+
 /**
  * 将 GroundingAttribution 转换为我们定义的 Citation 格式
- * @param attribution - 来自 Gemini API 的引用数据
+ * @param citations - 来自 Gemini API 的引用数据
  * @returns 格式化后的 Citation 数组
  */
-const formatCitations = (attribution: EnhancedGenerateContentResponse['citations']) => {
-  if (!attribution) return [];
-  return attribution.map((att, index) => ({
+const formatCitations = (citations: any[] | undefined) => {
+  if (!citations) return [];
+  // 基于 groundingAttribution 的格式
+  if (citations[0]?.groundingAttribution) {
+    return citations.map((att, index) => ({
+      url: att.groundingAttribution.web.uri,
+      title: att.groundingAttribution.web.title,
+      index: index + 1,
+    }));
+  }
+  // 基于新格式
+  return citations.map((att, index) => ({
     url: att.url,
     title: att.title,
     index: att.citationNumber,
@@ -54,24 +71,7 @@ export async function POST(req: Request) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
-      tools: {
-        functionDeclarations: [
-          {
-            name: "googleSearch",
-            description: "A tool to search the internet.",
-            parameters: {
-              type: "object",
-              properties: {
-                query: {
-                  type: "string",
-                  description: "The search query."
-                }
-              },
-              required: ["query"]
-            }
-          }
-        ]
-      },
+      tools: [{ googleSearch: {} }],
       toolConfig: {
         functionCallingConfig: {
           mode: FunctionCallingMode.AUTO,
@@ -110,7 +110,6 @@ export async function POST(req: Request) {
 
     const contents = [...history, { role: 'user', parts: currentUserParts }];
     
-    // 确保至少有一个 content
     if (contents.length === 0 || contents.every(c => c.parts.length === 0)) {
         return new Response(
             JSON.stringify({ error: "请求必须至少包含一个有效部分。" }),
@@ -125,7 +124,6 @@ export async function POST(req: Request) {
       safetySettings,
     });
     
-    // 创建一个可读流来通过 SSE 发送数据
     const stream = new ReadableStream({
       async start(controller) {
         const encoder = new TextEncoder();
@@ -133,12 +131,27 @@ export async function POST(req: Request) {
         for await (const chunk of result.stream) {
           try {
             const text = chunk.text();
-            const citations = formatCitations(chunk.citations);
+            
+            let citations: Citation[] = [];
+            if (chunk.functionCall?.name === 'googleSearch') {
+                // 这是工具调用，前端不需要展示
+            } else if (chunk.functionResponse?.name === 'googleSearch' && chunk.functionResponse.response.results) {
+                // 这是工具返回的结果
+                const searchResults = chunk.functionResponse.response.results;
+                citations = formatCitations(searchResults);
+            } else if(chunk.citations) {
+                citations = formatCitations(chunk.citations)
+            }
 
-            const payload = {
+
+            const payload: any = {
               ...(text && { text }),
-              ...(citations.length > 0 && { citations }),
             };
+            
+            // 只有当有引用并且有文本时才发送引用
+            if(citations.length > 0 && text) {
+                payload.citations = citations;
+            }
             
             if (Object.keys(payload).length > 0) {
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
@@ -162,7 +175,6 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("Gemini API error:", error);
     const errorMessage = error.message || "与 Gemini API 通信时发生未知错误";
-    // 尝试解析更详细的错误信息
     const detailedError = error.cause?.message || errorMessage;
     return new Response(
       JSON.stringify({ error: detailedError }),
