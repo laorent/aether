@@ -11,8 +11,8 @@ import {
 
 export const runtime = "edge";
 
-// 将模型名称定义为常量，方便未来修改
-const MODEL_NAME = "gemini-2.5-flash";
+// 从环境变量读取模型名称，如果未设置则使用默认值
+const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 // 定义请求体结构
 interface RequestBody {
@@ -41,15 +41,6 @@ interface Citation {
  */
 const formatCitations = (citations: any[] | undefined) => {
   if (!citations) return [];
-  // 基于 groundingAttribution 的格式
-  if (citations[0]?.groundingAttribution) {
-    return citations.map((att, index) => ({
-      url: att.groundingAttribution.web.uri,
-      title: att.groundingAttribution.web.title,
-      index: index + 1,
-    }));
-  }
-  // 基于新格式
   return citations.map((att, index) => ({
     url: att.url,
     title: att.title,
@@ -71,7 +62,7 @@ export async function POST(req: Request) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: MODEL_NAME, // 使用常量来指定模型
+      model: MODEL_NAME,
       tools: [{ googleSearch: {} }],
     });
 
