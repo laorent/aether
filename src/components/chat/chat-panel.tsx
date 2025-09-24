@@ -179,48 +179,53 @@ export function ChatPanel({ messages, setMessages, onClearChat }: ChatPanelProps
 
   return (
     <Card className="flex flex-col w-full h-full max-w-4xl mx-auto shadow-2xl rounded-xl">
-       <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
-        <CardTitle className="text-xl font-bold">
-          Aether
-        </CardTitle>
-        <AlertDialog open={isClearAlertOpen} onOpenChange={setClearAlertOpen}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Icons.moreVertical className="h-5 w-5" />
-                <span className="sr-only">更多选项</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <AlertDialogTrigger asChild>
-                <DropdownMenuItem disabled={messages.length === 0}>
-                  <Icons.trash className="mr-2" />
-                  清除聊天
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
+       <CardHeader className="relative flex flex-col items-center justify-center p-4 border-b text-center">
+        <div>
+          <CardTitle className="text-xl font-bold">
+            Aether
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">Powered by Gemini</p>
+        </div>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+          <AlertDialog open={isClearAlertOpen} onOpenChange={setClearAlertOpen}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Icons.moreVertical className="h-5 w-5" />
+                  <span className="sr-only">更多选项</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem disabled={messages.length === 0}>
+                    <Icons.trash className="mr-2" />
+                    清除聊天
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>确定要清除聊天记录吗？</AlertDialogTitle>
-              <AlertDialogDescription>
-                此操作无法撤销。所有聊天记录将被永久删除。
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>取消</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  onClearChat();
-                  setClearAlertOpen(false);
-                }}
-              >
-                确认清除
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>确定要清除聊天记录吗？</AlertDialogTitle>
+                <AlertDialogDescription>
+                  此操作无法撤销。所有聊天记录将被永久删除。
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>取消</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    onClearChat();
+                    setClearAlertOpen(false);
+                  }}
+                >
+                  确认清除
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </CardHeader>
       <ChatMessages messages={messages} isLoading={isLoading} />
       <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
