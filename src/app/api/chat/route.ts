@@ -7,9 +7,7 @@ import {
   HarmBlockThreshold,
   Content,
   Part,
-  FunctionCallingMode,
 } from "@google/generative-ai";
-import { GoogleAIFileManager } from "@google/generative-ai/server";
 
 export const runtime = "edge";
 
@@ -72,11 +70,6 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       tools: [{ googleSearch: {} }],
-      toolConfig: {
-        functionCallingConfig: {
-          mode: FunctionCallingMode.AUTO,
-        }
-      }
     });
 
     const generationConfig = {
@@ -133,13 +126,7 @@ export async function POST(req: Request) {
             const text = chunk.text();
             
             let citations: Citation[] = [];
-            if (chunk.functionCall?.name === 'googleSearch') {
-                // 这是工具调用，前端不需要展示
-            } else if (chunk.functionResponse?.name === 'googleSearch' && chunk.functionResponse.response.results) {
-                // 这是工具返回的结果
-                const searchResults = chunk.functionResponse.response.results;
-                citations = formatCitations(searchResults);
-            } else if(chunk.citations) {
+            if(chunk.citations) {
                 citations = formatCitations(chunk.citations)
             }
 
