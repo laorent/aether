@@ -181,7 +181,7 @@ export function ChatPanel({ messages, setMessages, onClearChat }: ChatPanelProps
     <Card className="flex flex-col w-full h-full max-w-4xl mx-auto shadow-2xl rounded-xl">
        <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
         <CardTitle className="text-xl font-bold">
-          GeminiFlow
+          NovaChat
         </CardTitle>
         <AlertDialog open={isClearAlertOpen} onOpenChange={setClearAlertOpen}>
           <DropdownMenu>

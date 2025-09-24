@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code-pro' });
 
 export const metadata: Metadata = {
-  title: 'GeminiFlow - 智能聊天机器人',
+  title: 'NovaChat - 智能聊天机器人',
   description: '一个由 Gemini 驱动的功能丰富的聊天机器人 Web 应用。',
 };
 
