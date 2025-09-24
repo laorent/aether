@@ -95,8 +95,8 @@ export async function POST(req: Request) {
 
     const history = messages.map(msg => ({
         role: msg.role,
-        parts: msg.parts,
-    }));
+        parts: msg.parts.filter(part => part.text !== undefined || part.inlineData !== undefined),
+    })).filter(msg => msg.parts.length > 0);
 
     const currentUserParts: Part[] = [{ text: userMessage.content }];
     if (userMessage.image) {
@@ -109,6 +109,15 @@ export async function POST(req: Request) {
     }
 
     const contents = [...history, { role: 'user', parts: currentUserParts }];
+    
+    // 确保至少有一个 content
+    if (contents.length === 0 || contents.every(c => c.parts.length === 0)) {
+        return new Response(
+            JSON.stringify({ error: "请求必须至少包含一个有效部分。" }),
+            { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+    }
+
 
     const result = await model.generateContentStream({
       contents,
@@ -122,16 +131,20 @@ export async function POST(req: Request) {
         const encoder = new TextEncoder();
         
         for await (const chunk of result.stream) {
-          const text = chunk.text();
-          const citations = formatCitations(chunk.citations);
+          try {
+            const text = chunk.text();
+            const citations = formatCitations(chunk.citations);
 
-          const payload = {
-            ...(text && { text }),
-            ...(citations.length > 0 && { citations }),
-          };
-          
-          if (Object.keys(payload).length > 0) {
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
+            const payload = {
+              ...(text && { text }),
+              ...(citations.length > 0 && { citations }),
+            };
+            
+            if (Object.keys(payload).length > 0) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
+            }
+          } catch (e) {
+            console.error("Error processing chunk:", e);
           }
         }
         controller.close();
@@ -148,8 +161,11 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("Gemini API error:", error);
+    const errorMessage = error.message || "与 Gemini API 通信时发生未知错误";
+    // 尝试解析更详细的错误信息
+    const detailedError = error.cause?.message || errorMessage;
     return new Response(
-      JSON.stringify({ error: error.message || "与 Gemini API 通信时发生未知错误" }),
+      JSON.stringify({ error: detailedError }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
