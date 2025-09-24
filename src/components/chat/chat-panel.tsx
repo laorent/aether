@@ -29,6 +29,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Image from "next/image";
 
 // 这是一个 polyfill，因为 some Vercel Edge Runtimes 可能没有 crypto.randomUUID
 const getUUID = () => {
@@ -179,14 +180,23 @@ export function ChatPanel({ messages, setMessages, onClearChat }: ChatPanelProps
 
   return (
     <Card className="flex flex-col w-full h-full max-w-4xl mx-auto shadow-2xl rounded-xl">
-       <CardHeader className="relative flex flex-col items-center justify-center p-4 border-b text-center">
-        <div>
+       <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
+        <div className="flex items-center gap-2">
+           <Image
+            src="/aether-logo.png"
+            alt="Aether Logo"
+            width={32}
+            height={32}
+            className="h-8 w-8"
+          />
+        </div>
+        <div className="text-center">
           <CardTitle className="text-xl font-bold">
             Aether
           </CardTitle>
           <p className="text-xs text-muted-foreground">Powered by Gemini</p>
         </div>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+        <div className="flex items-center">
           <AlertDialog open={isClearAlertOpen} onOpenChange={setClearAlertOpen}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
