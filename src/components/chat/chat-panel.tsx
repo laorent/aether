@@ -181,15 +181,7 @@ export function ChatPanel({ messages, setMessages, onClearChat }: ChatPanelProps
   return (
     <Card className="flex flex-col w-full h-full max-w-4xl mx-auto shadow-2xl rounded-xl">
        <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-2">
-           <Image
-            src="/aether-logo.png"
-            alt="Aether Logo"
-            width={32}
-            height={32}
-            className="h-8 w-8"
-          />
-        </div>
+        <div className="w-8"></div>
         <div className="text-center">
           <CardTitle className="text-xl font-bold">
             Aether
