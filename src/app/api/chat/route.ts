@@ -11,6 +11,9 @@ import {
 
 export const runtime = "edge";
 
+// 将模型名称定义为常量，方便未来修改
+const MODEL_NAME = "gemini-2.5-flash";
+
 // 定义请求体结构
 interface RequestBody {
   messages: Content[];
@@ -68,7 +71,7 @@ export async function POST(req: Request) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: MODEL_NAME, // 使用常量来指定模型
       tools: [{ googleSearch: {} }],
     });
 
