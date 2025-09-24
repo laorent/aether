@@ -1,8 +1,8 @@
-# NovaChat - 智能聊天机器人
+# Aether - 智能聊天机器人
 
-NovaChat 是一个功能完整、可直接部署到 Vercel 的 Gemini 聊天机器人 Web 应用。它基于 Next.js App Router 构建，并利用 Gemini 的强大功能，支持多轮对话、流式响应、图像理解和联网搜索。
+Aether 是一个功能完整、可直接部署到 Vercel 的 Gemini 聊天机器人 Web 应用。它基于 Next.js App Router 构建，并利用 Gemini 的强大功能，支持多轮对话、流式响应、图像理解和联网搜索。
 
-![NovaChat 截图](https://storage.googleapis.com/aall-demos/geminiflow/geminiflow-screenshot.png)
+![Aether 截图](https://storage.googleapis.com/aall-demos/geminiflow/geminiflow-screenshot.png)
 
 ## ✨ 核心功能
 
@@ -28,8 +28,8 @@ NovaChat 是一个功能完整、可直接部署到 Vercel 的 Gemini 聊天机�
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/your-repo/novachat.git
-cd novachat
+git clone https://github.com/your-repo/aether.git
+cd aether
 ```
 
 ### 2. 安装依赖
@@ -62,7 +62,7 @@ npm run dev
 
 你可以轻松地将此应用一键部署到 Vercel。
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-repo%2Fnovachat)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-repo%2Faether)
 
 **部署步骤**:
 
