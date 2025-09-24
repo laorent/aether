@@ -31,6 +31,7 @@ export function ChatPanel() {
       id: getUUID(),
       role: "user",
       content: content,
+      parts: [{ text: content }],
       ...(image && { image: { url: `data:${image.type};base64,${image.data}`, mimeType: image.type } }),
     };
 
@@ -58,7 +59,7 @@ export function ChatPanel() {
       }
 
       const decoder = new TextDecoder();
-      let newModelMessage: Message = { id: getUUID(), role: "model", content: "", isStreaming: true, citations: [] };
+      let newModelMessage: Message = { id: getUUID(), role: "model", content: "", isStreaming: true, citations: [], parts: [] };
       setMessages(prev => [...prev, newModelMessage]);
 
       let done = false;
@@ -96,7 +97,12 @@ export function ChatPanel() {
         }
       }
       
-      setMessages(prev => prev.map(msg => msg.id === newModelMessage.id ? { ...msg, isStreaming: false } : msg));
+      setMessages(prev => prev.map(msg => {
+        if (msg.id === newModelMessage.id) {
+            return { ...msg, isStreaming: false, parts: [{ text: msg.content }] };
+        }
+        return msg;
+    }));
 
     } catch (error: any) {
       toast({

@@ -1,6 +1,6 @@
 // 文件路径: src/lib/types.ts
 // 用途: 定义应用中共享的 TypeScript 类型
-
+import { Part } from "@google/generative-ai";
 /**
  * 表示信息来源的引用
  */
@@ -23,4 +23,5 @@ export interface Message {
   };
   citations?: Citation[];
   isStreaming?: boolean;
+  parts: Part[];
 }
