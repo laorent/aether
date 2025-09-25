@@ -111,4 +111,4 @@ npm run dev
   - **A**: 在你的 `.env.local` 文件或 Vercel 的环境变量设置中，添加或修改 `NEXT_PUBLIC_AETHER_PASSWORD` 的值。如果想移除密码，将该变量的值设置为空即可。
 
 - **Q: 如何更换模型？**
-  - **A**: 在你的 `.env.local` 文件或 Vercel 的环境变量设置中，添加或修改 `GEMINI_MODEL` 的值。例如，可以设置为 `gemini-1.5-pro-latest`。
+  - **A**: 在你的 `.env.local` 文件或 Vercel 的环境变量设置中，添加或修改 `GEMINI_MODEL` 的值。例如，可以设置为 `gemini-2.5-pro`。
