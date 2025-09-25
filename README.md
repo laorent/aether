@@ -2,7 +2,6 @@
 
 Aether 是一个功能完整、可直接部署到 Vercel 的 Gemini 聊天机器人 Web 应用。它基于 Next.js App Router 构建，并利用 Gemini 的强大功能，支持多轮对话、流式响应、图像理解和联网搜索。
 
-![Aether 截图](https://storage.googleapis.com/aall-demos/geminiflow/geminiflow-screenshot.png)
 
 ## ✨ 核心功能
 
