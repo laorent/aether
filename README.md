@@ -29,7 +29,7 @@ Aether 是一个功能完整、可直接部署到 Vercel 的 Gemini 聊天机器
 ### 1. 克隆项目
 
 ```bash
-git clone (https://github.com/laorent/aether.git)
+git clone https://github.com/laorent/aether.git
 cd aether
 ```
 
